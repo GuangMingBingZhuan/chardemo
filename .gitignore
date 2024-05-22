@@ -1,0 +1,10 @@
+.cache/
+.vscode/
+*.cmd
+*.mod*
+*.o
+*.ko
+modules.order
+Module.symvers
+
+compile_commands.json
