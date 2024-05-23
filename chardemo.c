@@ -14,9 +14,10 @@
 #include <linux/kern_levels.h>
 #include <linux/types.h>
 
-#include "chardemo.h"
-
 #define DEVICE_NAME "chardemo"
+#define CHARDEMO_MAGIC 239U
+#define CHARDEMO_MEM_CLEAR _IO(CHARDEMO_MAGIC, 0)
+
 struct chardemo_dev {
     struct cdev cdev;
     unsigned char *buffer;
@@ -190,7 +191,7 @@ static int __init chardemo_init(void)
     if (ret)
         printk(KERN_NOTICE "Error %d adding chardemo MAJOR: %d, MINOR: %d", ret, MAJOR(devno), MINOR(devno));
 
-    printk(KERN_INFO "device chardemo MAJOR: %d, MINOR: %d", MAJOR(devno), MINOR(devno));
+    printk(KERN_INFO "device chardemo MAJOR: %d, MINOR: %d", MAJOR(chardemo->cdev.dev), MINOR(chardemo->cdev.dev));
 
     chardemo->buffer = kzalloc(buffer_size, GFP_KERNEL);
 
