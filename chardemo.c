@@ -23,13 +23,12 @@ struct chardemo_dev {
     unsigned char *buffer;
 };
 
-static int major = 239;
+static int major = CHARDEMO_MAGIC;
 static size_t buffer_size = 4 * 1024;
 static struct chardemo_dev *chardemo;
 
 module_param(buffer_size, ulong, S_IRUGO);
 
-/* Prototypes for device functions */
 static int device_open(struct inode *, struct file *);
 static int device_release(struct inode *, struct file *);
 static ssize_t device_read(struct file *, char *, size_t, loff_t *);
@@ -37,7 +36,6 @@ static ssize_t device_write(struct file *, const char *, size_t, loff_t *);
 static loff_t device_llseek (struct file *, loff_t, int);
 static long device_ioctl (struct file *, unsigned int, unsigned long);
 
-/* This structure points to all of the device functions */
 static struct file_operations file_ops = {
     .owner = THIS_MODULE,
     .read = device_read,
@@ -48,7 +46,6 @@ static struct file_operations file_ops = {
     .unlocked_ioctl = device_ioctl,
 };
 
-/* When a process reads from our device, this gets called. */
 static ssize_t device_read(struct file *file, char __user *buffer, size_t len, loff_t *offset)
 {
     long long pos = *offset;
@@ -73,7 +70,6 @@ static ssize_t device_read(struct file *file, char __user *buffer, size_t len, l
     return ret;
 }
 
-/* Called when a process tries to write to our device */
 static ssize_t device_write(struct file *file, const char __user *buffer, size_t len, loff_t *offset)
 {
     long long pos = *offset;
@@ -207,7 +203,6 @@ static void __exit chardemo_exit(void)
     kfree(chardemo);
 }
 
-/* Register module functions */
 module_init(chardemo_init);
 module_exit(chardemo_exit);
 

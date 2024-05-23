@@ -27,7 +27,8 @@ int main(int argc, char *argv[])
 
     buffer = malloc(buffer_size);
     system(cmd);
-    system("sudo mknod /dev/chardemo -m 666 c 239 0");
+    sprintf(cmd, "sudo mknod /dev/chardemo -m 666 c %u 0", CHARDEMO_MAGIC);
+    system(cmd);
     
     fd = open("/dev/chardemo", O_RDWR);
     if (fd < 0) {
