@@ -14,9 +14,9 @@
 #include <linux/kern_levels.h>
 #include <linux/types.h>
 
+#include "chardemo.h"
+
 #define DEVICE_NAME "chardemo"
-#define CHARDEMO_MAGIC 239U
-#define CHARDEMO_MEM_CLEAR _IO(CHARDEMO_MAGIC, 0)
 
 struct chardemo_dev {
     struct cdev cdev;
