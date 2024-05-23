@@ -14,5 +14,5 @@ install:
 	sudo depmod -A
 
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 	rm test test.o
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
