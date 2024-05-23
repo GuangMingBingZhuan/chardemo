@@ -20,8 +20,7 @@ int main(int argc, char *argv[])
     } else if (argc == 2) {
         buffer_size = atol(argv[1]);
         sprintf(cmd, "sudo modprobe chardemo buffer_size=%s", argv[1]);
-    }
-    else {
+    } else {
         buffer_size = 4096;
         sprintf(cmd, "sudo modprobe chardemo");
     }
