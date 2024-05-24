@@ -64,7 +64,7 @@ static ssize_t device_read(struct file *file, char __user *buffer, size_t len, l
         *offset += count;
         ret = count;
 
-        printk(KERN_INFO "module chardemo read %lu bytes from %lld", count, pos);
+        printk(KERN_INFO "module chardemo read %lu bytes from %lld\n", count, pos);
     }
 
     return ret;
@@ -88,13 +88,12 @@ static ssize_t device_write(struct file *file, const char __user *buffer, size_t
         *offset += count;
         ret = count;
 
-        printk(KERN_INFO "module chardemo wrote %lu bytes from %lld", count, pos);
+        printk(KERN_INFO "module chardemo wrote %lu bytes from %lld\n", count, pos);
     }
 
     return ret;
 }
 
-/* Called when a process opens our device */
 static int device_open(struct inode *inode, struct file *file)
 {
     file->private_data = chardemo;
@@ -102,7 +101,6 @@ static int device_open(struct inode *inode, struct file *file)
     return 0;
 }
 
-/* Called when a process closes our device */
 static int device_release(struct inode *inode, struct file *file)
 {
     module_put(THIS_MODULE);
@@ -185,9 +183,9 @@ static int __init chardemo_init(void)
     chardemo->cdev.owner = THIS_MODULE;
     ret = cdev_add(&chardemo->cdev, devno, 1);
     if (ret)
-        printk(KERN_NOTICE "Error %d adding chardemo MAJOR: %d, MINOR: %d", ret, MAJOR(devno), MINOR(devno));
+        printk(KERN_NOTICE "Error %d adding chardemo MAJOR: %d, MINOR: %d\n", ret, MAJOR(devno), MINOR(devno));
 
-    printk(KERN_INFO "device chardemo MAJOR: %d, MINOR: %d", MAJOR(chardemo->cdev.dev), MINOR(chardemo->cdev.dev));
+    printk(KERN_INFO "device chardemo MAJOR: %d, MINOR: %d\n", MAJOR(chardemo->cdev.dev), MINOR(chardemo->cdev.dev));
 
     chardemo->buffer = kzalloc(buffer_size, GFP_KERNEL);
 
