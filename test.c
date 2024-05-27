@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
 
     buffer = malloc(buffer_size);
     system(cmd);
-    sprintf(cmd, "sudo mknod /dev/chardemo -m 666 c %u 0", CHARDEMO_MAGIC);
-    system(cmd);
     
     fd = open("/dev/chardemo", O_RDWR);
     if (fd < 0) {
@@ -59,7 +57,6 @@ int main(int argc, char *argv[])
 
     close(fd);
 out:
-    system("sudo rm /dev/chardemo");
     system("sudo modprobe -r chardemo");
     free(buffer);
 

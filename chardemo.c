@@ -1,5 +1,4 @@
 #include <linux/printk.h>
-#include <linux/stat.h>
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/export.h>
@@ -13,6 +12,9 @@
 #include <linux/kdev_t.h>
 #include <linux/kern_levels.h>
 #include <linux/types.h>
+#include <linux/kobject.h>
+#include <linux/sysfs.h>
+#include <linux/device.h>
 
 #include "chardemo.h"
 
@@ -20,6 +22,8 @@
 
 struct chardemo_dev {
     struct cdev cdev;
+    struct class *class;
+    struct device *device;
     unsigned char *buffer;
 };
 
@@ -148,7 +152,6 @@ static long device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     switch(cmd) {
     case CHARDEMO_MEM_CLEAR:
         memset(dev->buffer, 0, buffer_size);
-        printk(KERN_INFO "module chardemo buffer cleared\n");
         break;
     default:
         return -EINVAL;
@@ -185,18 +188,27 @@ static int __init chardemo_init(void)
     if (ret)
         printk(KERN_NOTICE "Error %d adding chardemo MAJOR: %d, MINOR: %d\n", ret, MAJOR(devno), MINOR(devno));
 
-    printk(KERN_INFO "device chardemo MAJOR: %d, MINOR: %d\n", MAJOR(chardemo->cdev.dev), MINOR(chardemo->cdev.dev));
+    chardemo->class = class_create(THIS_MODULE, DEVICE_NAME);
+    if(IS_ERR(chardemo->class))
+        return PTR_ERR(chardemo->class);
+
+    chardemo->device = device_create(chardemo->class, NULL, devno, chardemo, DEVICE_NAME);
+    if(IS_ERR(chardemo->device))
+        return PTR_ERR(chardemo->device);
 
     chardemo->buffer = kzalloc(buffer_size, GFP_KERNEL);
-
+    if(!chardemo->buffer)
+        ret = -ENOMEM;
     return ret;
 }
 
 static void __exit chardemo_exit(void)
 {
     printk(KERN_INFO "module chardemo exiting\n");
-    unregister_chrdev_region(chardemo->cdev.dev, 1);
     cdev_del(&chardemo->cdev);
+    unregister_chrdev_region(chardemo->cdev.dev, 1);
+    device_destroy(chardemo->class, chardemo->device->devt);
+    class_destroy(chardemo->class);
     kfree(chardemo->buffer);
     kfree(chardemo);
 }

@@ -1,0 +1,1 @@
+SUBSYSTEM=="chardemo", KERNEL=="chardemo", MODE="0666"
