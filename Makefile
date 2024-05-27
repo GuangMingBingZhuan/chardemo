@@ -4,7 +4,7 @@ obj-m += chardemo.o
 
 all: test chardemo.ko
 
-test: test.o
+test: test.o chardemo.h
 
 chardemo.ko: chardemo.c chardemo.h
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
